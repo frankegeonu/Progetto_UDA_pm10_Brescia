@@ -99,7 +99,11 @@ public class HelloController {
             datiCorrente = task.getValue();
             setLoading(false);
             applicaFiltri();
-            labelStatus.setText("File caricato: " + file.getName());
+            int scartate = csvService.getRigheScartate();
+            String stato = "File caricato: " + file.getName();
+            if (scartate > 0)
+                stato += "  ⚠ " + scartate + " righe non valide ignorate";
+            labelStatus.setText(stato);
         });
         task.setOnFailed(e -> {
             setLoading(false);

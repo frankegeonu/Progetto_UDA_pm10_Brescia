@@ -23,6 +23,11 @@ import java.util.*;
  */
 public class CsvDataService {
 
+    private int righeScartate = 0;
+
+    /** Numero di righe CSV scartate nell'ultima chiamata a {@link #readCsv}. */
+    public int getRigheScartate() { return righeScartate; }
+
     // Formati data/ora riconosciuti automaticamente
     private static final List<DateTimeFormatter> FORMATTERS = List.of(
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"),
@@ -41,6 +46,7 @@ public class CsvDataService {
      */
     public Map<String, List<PM10Reading>> readCsv(File file) throws IOException {
         char delimiter = detectDelimiter(file);
+        righeScartate = 0;
         Map<String, List<PM10Reading>> result = new LinkedHashMap<>();
 
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
@@ -59,6 +65,8 @@ public class CsvDataService {
                 if (reading != null) {
                     result.computeIfAbsent(reading.getSensorName(), k -> new ArrayList<>())
                           .add(reading);
+                } else {
+                    righeScartate++;
                 }
             }
         }

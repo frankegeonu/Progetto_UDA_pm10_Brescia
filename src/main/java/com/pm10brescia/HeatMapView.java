@@ -75,9 +75,8 @@ public class HeatMapView {
             }
         }
 
-        // Prende gli ultimi 7 giorni presenti nei dati
+        // Tutti i giorni presenti (già filtrati per periodo dal controller)
         List<String> giorni = new ArrayList<>(griglia.descendingKeySet());
-        if (giorni.size() > 7) giorni = giorni.subList(0, 7);
         Collections.reverse(giorni); // ordine cronologico → sinistra = più vecchio
 
         // Calcola min e max globali per scalare i colori
@@ -148,8 +147,9 @@ public class HeatMapView {
         titolo.setStyle("-fx-text-fill: #4FC3F7; -fx-font-size: 13; " +
                         "-fx-font-weight: bold; -fx-font-family: Consolas;");
 
-        Label sottotitolo = new Label("Righe = ore del giorno  ·  Colonne = ultimi 7 giorni  " +
-                                      "·  Passa il mouse su una cella per i dettagli");
+        Label sottotitolo = new Label(String.format(
+                "Righe = ore del giorno  ·  Colonne = %d giorni  " +
+                "·  Passa il mouse su una cella per i dettagli", giorni.size()));
         sottotitolo.setStyle("-fx-text-fill: #5a6278; -fx-font-size: 10; -fx-font-family: Consolas;");
 
         VBox header = new VBox(4, titolo, sottotitolo);
