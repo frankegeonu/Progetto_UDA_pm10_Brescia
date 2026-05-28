@@ -6,9 +6,9 @@ Applicazione JavaFX per la visualizzazione dei dati PM10 rilevati dai sensori AR
 
 L'applicazione mostra un **grafico a linee interattivo** con l'andamento del PM10 nei tre sensori presenti a Brescia:
 
-- Brescia - Via Ziziola (ID 5504)
-- Brescia - Villaggio Sereno (ID 5707)
-- Brescia - Broletto (ID 5812)
+- Brescia - Via Ziziola 
+- Brescia - Villaggio Sereno 
+- Brescia - Broletto 
 
 I dati sono forniti da [ARPA Lombardia](https://www.dati.lombardia.it/Ambiente/Dati-sensori-aria/nicp-bhqi) e inclusi direttamente nel progetto. All'avvio il grafico si popola automaticamente senza nessuna azione da parte dell'utente.
 
