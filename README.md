@@ -1,105 +1,102 @@
-# PM10 Brescia — Valori dei sensori ARPA Lombardia
+# Valori PM10 · Brescia
 
-Applicazione JavaFX che mostra un grafico a linee con l'andamento del PM10
-rilevato dai tre sensori ARPA presenti nel comune di Brescia.
+Applicazione JavaFX per la visualizzazione dei dati PM10 rilevati dai sensori ARPA Lombardia nel comune di Brescia.
 
----
+## Descrizione
 
-## Struttura del progetto
+L'applicazione mostra un **grafico a linee interattivo** con l'andamento del PM10 nei tre sensori presenti a Brescia:
 
-```
-pm10-brescia/
-│
-├── pom.xml                                          ← dipendenze Maven
-│
-├── src/main/java/
-│   ├── module-info.java                             ← dichiarazione modulo Java
-│   └── com/pm10brescia/
-│       ├── HelloApplication.java                    ← entry point (estende Application)
-│       ├── HelloController.java                     ← controller legato all'FXML
-│       ├── PM10Reading.java                         ← model: singola misurazione
-│       └── CsvDataService.java                      ← lettura CSV + dati di esempio
-│
-├── src/main/resources/com/pm10brescia/
-│   └── hello-view.fxml                              ← layout della finestra
-│
-└── data/
-    └── pm10_brescia_esempio.csv                     ← CSV di esempio (formato ARPA)
-```
+- Brescia - Via Ziziola (ID 5504)
+- Brescia - Villaggio Sereno (ID 5707)
+- Brescia - Broletto (ID 5812)
 
----
+I dati sono forniti da [ARPA Lombardia](https://www.dati.lombardia.it/Ambiente/Dati-sensori-aria/nicp-bhqi) e inclusi direttamente nel progetto. All'avvio il grafico si popola automaticamente senza nessuna azione da parte dell'utente.
 
-## Cosa devo aggiungere per far funzionare il progetto
+È presente anche una **mappa di calore** (tab dedicata) che mostra la media dei tre sensori per ora del giorno e per giorno, permettendo di identificare visivamente i pattern di inquinamento.
 
-### 1. Dipendenza Maven: Apache Commons CSV
+## Requisiti
 
-Nel `pom.xml` è già inclusa. Serve perché `CsvDataService.java` usa
-`org.apache.commons.csv.*` per leggere i file CSV.
+| Strumento | Versione minima |
+|-----------|----------------|
+| Java JDK  | 21              |
+| Maven     | 3.8+            |
 
-Se la vedi evidenziata in rosso in IntelliJ, fai clic su
-**"Load Maven Changes"** (l'icona 🔄 in alto a destra quando apri il `pom.xml`).
+JavaFX e Apache Commons CSV sono inclusi come dipendenze Maven: non serve installarli separatamente.
 
-```xml
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-csv</artifactId>
-    <version>1.10.0</version>
-</dependency>
-```
+## Come eseguire
 
-### 2. SDK Java 21 in IntelliJ
-
-1. **File → Project Structure → Project**
-2. **SDK** → seleziona un JDK 21 (se non ce l'hai: **Download JDK → Corretto 21**)
-3. **Language level** → 21
-
-### 3. module-info.java
-
-Il file `src/main/java/module-info.java` dichiara il modulo e le sue dipendenze.
-Non modificarlo a meno che tu non aggiunga nuove librerie.
-
----
-
-## Come avviare
+### 1. Clona il repository
 
 ```bash
-# Dalla cartella del progetto
+git clone https://github.com/<utente>/pm10-brescia.git
+cd pm10-brescia
+```
+
+### 2. Apri in IntelliJ
+
+**File → New → Project from Existing Sources** → seleziona la cartella `pm10-brescia` → scegli **Maven** → Finish.
+
+Aspetta che Maven scarichi le dipendenze (barra di avanzamento in basso).
+
+### 3. Avvia
+
+Apri `HelloApplication.java` e premi il triangolo verde ▶ accanto al metodo `main`.
+
+Oppure da terminale:
+
+```bash
 mvn javafx:run
 ```
 
-Oppure in IntelliJ: apri `HelloApplication.java` → tasto ▶ verde accanto al `main`.
+## Funzionalità
 
----
+| Funzionalità | Descrizione |
+|---|---|
+| Grafico a linee | Andamento PM10 dei 3 sensori con linea soglia UE (50 µg/m³) |
+| Mappa di calore | Griglia ora × giorno colorata (verde→rosso) con media dei sensori |
+| Aggregazione | Dati grezzi · media oraria · media giornaliera |
+| Filtro periodo | Ultimi 7 giorni · ultimi 14 giorni · tutto il periodo |
+| Statistiche | Media e massimo del periodo selezionato nella barra in basso |
 
-## Come funziona l'app
-
-### Pulsante "Carica CSV"
-Apre un file chooser. Seleziona un CSV scaricato da ARPA Lombardia:
-[https://www.dati.lombardia.it/Ambiente/Dati-sensori-aria/nicp-bhqj](https://www.dati.lombardia.it/Ambiente/Dati-sensori-aria/nicp-bhqj)
-
-Il parser riconosce automaticamente il separatore (`,` o `;`) e le colonne
-`Data`, `Ora`, `NomeSensore`, `Valore`.
-
-### Pulsante "Dati di Esempio"
-Genera 30 giorni di dati simulati per 3 sensori senza bisogno di nessun file.
-
-### Filtri
-- **Aggregazione**: dati grezzi · media oraria · media giornaliera
-- **Periodo**: 7 / 14 / 30 giorni · tutto il dataset
-- Premi **Applica** per aggiornare il grafico
-
-La **linea rossa** indica la soglia giornaliera UE per PM10 (50 µg/m³).
-
----
-
-## File CSV di esempio
-
-La cartella `data/` contiene `pm10_brescia_esempio.csv` con il formato esatto
-atteso dall'applicazione. Puoi usarlo come riferimento per capire come ARPA
-struttura i dati reali.
+## Struttura del codice
 
 ```
-Data;Ora;NomeSensore;Valore
-01/04/2026;08:00:00;Brescia - Via Ziziola;62,1
-...
+src/main/java/com/pm10brescia/
+├── HelloApplication.java   — entry point, carica l'FXML e apre la finestra
+├── HelloController.java    — controller JavaFX, gestisce filtri e aggiornamento viste
+├── HeatMapView.java        — vista mappa di calore (GridPane custom)
+├── CsvDataService.java     — lettura e parsing del CSV ARPA Lombardia
+└── PM10Reading.java        — model: singola misurazione (timestamp, sensore, valore)
+
+src/main/resources/com/pm10brescia/
+├── hello-view.fxml         — layout della finestra (TabPane con grafico e heatmap)
+└── pm10_brescia.csv        — dati PM10 Brescia nel formato ARPA Lombardia
 ```
+
+### Separazione delle responsabilità
+
+```
+CsvDataService        →  legge  il CSV
+PM10Reading           →  struttura dati (model)
+HelloController       →  applica i filtri, coordina le due viste
+HelloApplication      →  entry point JavaFX
+HeatMapView           →  disegna la mappa di calore
+hello-view.fxml       →  definisce il layout della UI
+```
+
+## Formato CSV
+
+Il file CSV segue il formato del portale opendata di ARPA Lombardia:
+
+```
+"IdSensore","Data","Valore","Stato","idOperatore"
+"5504","01/04/2026 08:00:00 AM","48,6","VA","1"
+```
+
+Solo le righe con `Stato = VA` (valido) vengono incluse nel grafico.
+
+## Dati
+
+Fonte: [ARPA Lombardia — Dati sensori aria](https://www.dati.lombardia.it/Ambiente/Dati-sensori-aria/nicp-bhqi)
+
+Progetto svolto da: Regio Matteo, Gaburri Samuele e Frank Egeonu
